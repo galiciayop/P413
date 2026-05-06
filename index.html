@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="p413App" ng-controller="MainController as mainCtrl" ng-class="{'dark': mainCtrl.isDark}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P413 Functional Training</title>
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fffbea',
+                            100: '#fff1c5',
+                            200: '#ffe485',
+                            300: '#ffd146',
+                            400: '#ffbc1b',
+                            500: '#ff9d00',
+                            600: '#e27b00',
+                            700: '#bb5502',
+                            800: '#984208',
+                            900: '#7c360b',
+                            950: '#481a00',
+                        },
+                        darkbase: '#0f1115'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+        /* Glassmorphism utils */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(15, 17, 21, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* View transitions */
+        .view-animate-container {
+            position:relative;
+        }
+        .view-animate.ng-enter, .view-animate.ng-leave {
+            transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+            position:absolute;
+            width:100%;
+        }
+        .view-animate.ng-enter {
+            opacity:0;
+            transform: translateY(20px);
+        }
+        .view-animate.ng-enter.ng-enter-active {
+            opacity:1;
+            transform: translateY(0);
+        }
+        .view-animate.ng-leave {
+            opacity:1;
+            transform: translateY(0);
+        }
+        .view-animate.ng-leave.ng-leave-active {
+            opacity:0;
+            transform: translateY(-20px);
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkbase dark:text-gray-200 font-sans min-h-screen flex flex-col antialiased relative overflow-x-hidden transition-colors duration-500">
+    
+    <!-- Animated Background Orbs -->
+    <div class="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-brand-500/20 dark:bg-brand-500/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-orange-400/20 dark:bg-orange-500/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[30rem] h-[30rem] bg-rose-400/20 dark:bg-rose-500/10 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-70 animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Floating Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pb-2 transition-all duration-300">
+        <nav class="max-w-6xl mx-auto glass rounded-2xl shadow-lg dark:shadow-none transition-all duration-300">
+            <div class="flex justify-between items-center h-16 px-6">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#!/" class="text-2xl font-display font-extrabold tracking-tight text-gray-900 dark:text-white uppercase flex items-center gap-2 group">
+                        <span class="bg-gradient-to-r from-brand-500 to-orange-400 gradient-text">P413</span>
+                        <span class="hidden sm:inline tracking-wide text-sm mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Functional</span>
+                        <span class="hidden sm:inline tracking-wide text-sm mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Training</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Nav & Theme Toggle -->
+                <div class="flex items-center space-x-2">
+                    <div class="hidden sm:flex items-center space-x-1 mr-4 bg-gray-200/50 dark:bg-gray-800/50 p-1 rounded-full">
+                        <a href="#!/" class="px-4 py-1.5 text-sm font-medium rounded-full hover:bg-white dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-300 hover:text-brand-500 dark:hover:text-brand-400">Home</a>
+                        <a href="#!/booking" class="px-4 py-1.5 text-sm font-medium rounded-full hover:bg-white dark:hover:bg-gray-700 transition-all text-gray-700 dark:text-gray-300 hover:text-brand-500 dark:hover:text-brand-400">Book Session</a>
+                    </div>
+
+                    <!-- Mobile Booking Button -->
+                    <a href="#!/booking" class="sm:hidden text-xs font-bold bg-gradient-to-r from-brand-500 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 transition-all">
+                        Book Now
+                    </a>
+
+                    <!-- Theme Toggle -->
+                    <button ng-click="mainCtrl.toggleTheme()" class="p-2.5 rounded-full bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 transition-all shadow-sm focus:outline-none" aria-label="Toggle Dark Mode">
+                        <svg ng-show="mainCtrl.isDark" class="w-5 h-5 text-brand-400 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <svg ng-show="!mainCtrl.isDark" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow relative w-full h-full z-10 pt-28 pb-12">
+        <div ng-view class="view-animate h-full"></div>
+    </main>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
